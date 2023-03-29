@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="pixi.js"></script>
+</head>
+<body>
+    <div>
+        <button onclick="changBg(event)">修改背景颜色</button>
+        <button onclick="resize(event)">修改画布宽高</button>
+        <button onclick="fullWindow()">适应窗口</button>
+        <button onclick="loadSprite()">加载sprite</button>
+        <button onclick="startAni()">开始动画</button>
+    </div>
+</body>
+<script type="text/javascript">
+    //Create a Pixi Application
+    let app = new PIXI.Application({width: 256, height: 256, resolution: 1});
+
+    //Add the canvas that Pixi automatically created for you to the HTML document
+    document.body.appendChild(app.view);
+
+    function changBg(e){
+        app.renderer.background.color = 0x061639;
+    }
+    function resize(){
+        app.renderer.autoResize = true
+        app.renderer.resize(512, 512)
+    }
+    function fullWindow(){
+        app.renderer.view.style.position = "absolute";
+        app.renderer.view.style.display = "block";
+        app.renderer.autoResize = true;
+        app.renderer.resize(window.innerWidth, window.innerHeight);
+    }
+
+    let stop = true
+    function loadSprite(){
+        const texture = PIXI.Texture.from('images/1.png');
+        console.log(texture.frame)
+        let sprite = new PIXI.Sprite(texture)
+        sprite.width = app.screen.width
+        sprite.height = app.screen.height
+        console.log(sprite)
+        app.stage.addChild(sprite)
+        doAni(sprite)
+    }
+    function doAni(sprite){
+        // Add a variable to count up the seconds our demo has been running
+        let elapsed = 0.0;
+        // Tell our application's ticker to run a new callback every frame, passing
+        // in the amount of time that has passed since the last tick
+        app.ticker.add((delta) => {
+            if(stop) return
+          // Add the time to our total elapsed time
+          elapsed += delta;
+          // Update the sprite's X position based on the cosine of our elapsed time.  We divide
+          // by 50 to slow the animation down a bit...
+          sprite.x = 100.0 + Math.cos(elapsed/50.0) * 100.0;
+        });
+    }
+    function startAni(){
+        stop = false
+    }
+
+</script>
+</html>
